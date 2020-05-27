@@ -11,6 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
+import org.apache.catalina.ant.SessionsTask;
 import sample.daos.UserDAO;
 
 /**
@@ -18,8 +21,10 @@ import sample.daos.UserDAO;
  * @author nguyentrinhan2000
  */
 public class LoginServlet extends HttpServlet {
+
     public static String SUCCESS = "search.html";
     public static String ERROR = "invalid.html";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,18 +37,22 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession(true);
         String url = ERROR;
         try {
             String userID = request.getParameter("txtUserID");
             String password = request.getParameter("txtPassword");
             UserDAO dao = new UserDAO();
             String check = dao.checkLogin(userID, password);
-            if (!check.isEmpty()){
+            if (!check.isEmpty()) {
                 url = SUCCESS;
+                session.setAttribute("fullName", request.getParameter("fullName"));
             }
         } catch (Exception e) {
+            log("error at login servlet: " + e.toString());
         } finally {
             response.sendRedirect(url);
+
         }
     }
 

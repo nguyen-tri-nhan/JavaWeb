@@ -56,11 +56,12 @@ public class SearchResult extends HttpServlet {
             int count = 0;
             for (UserDTO dto : list) {
                 out.println("<tr>");
+                
+                out.println("<td>"+ count+1 +"</td>");
                 out.println("<td>" + dto.getUserID() + "</td>");
-                out.println("<td>" + dto.getPassword() + "</td>");
                 out.println("<td>" + dto.getFullName() + "</td>");
+                out.println("<td>" + dto.getPassword() + "</td>");
                 out.println("<td>" + dto.getRoleID() + "</td>");
-                out.println("<td></td>");
                 out.println("</tr>");
                 count++;
             }
