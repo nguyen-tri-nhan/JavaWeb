@@ -67,7 +67,7 @@
                             </td>
                             <td>
                                 <input type="submit" value="Update" name="btnAction" />
-                                <<input type="hidden" name="txtSearch" value="${param.txtSearch}"
+                                <input type="hidden" name="txtSearch" value="${param.txtSearch}"
                             </td>
                         </form>
                     </tr>
@@ -77,4 +77,87 @@
     </c:if>
 </c:if>
 </body>
+<%--<body>
+    <%
+        UserDTO user = (UserDTO) session.getAttribute("USER");
+        if (user == null) {
+            response.sendRedirect("login.html");
+        }
+    %>
+<!--        <h1>Welcome <%= session.getAttribute("FULLNAME")%> </h1>-->
+    <h1>Welcome ${sessionScope.FULLNAME}</h1>
+    <a href="MainController?btnAction=Logout">Logout</a>
+    <%
+        String Search = request.getParameter("txtSearch");
+        if (Search == null) {
+            Search = "";
+        }
+    %>
+    <h2>You Searched <%=Search%> </h2>
+    <form action="MainController">
+        Search <input type ="text" value="<%=Search%>" name ="txtSearch"/>
+        <input type="submit" value="Search" name ="btnAction"/>
+    </form>
+    <%
+        List<UserDTO> list = (List<UserDTO>) request.getAttribute("LIST_USER");
+        if (list != null) {
+
+            if (!list.isEmpty()) {
+    %>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Num</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Pass</th>
+                <th>RoleID</th>
+                <th>Delete</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+
+        <% int count = 1;
+            for (UserDTO dto : list) {
+        %>
+        <tr>
+        <form action="MainController" method="POST">
+            <td>
+                <%= count++%>
+            </td>
+            <td>
+
+                <input type ="text" name="txtUserID" value="<%= dto.getUserID()%>" readonly="true"/>
+            </td>
+            <td>
+
+                <input type ="text" name="txtFullName" value="<%= dto.getFullName()%>"/>
+            </td>
+            <td>
+                <%= dto.getPassword()%>
+            </td>
+            <td>
+
+                <input type ="text" name="txtRoleID" value="<%= dto.getRoleID()%>"/>
+            </td>
+            <td>
+                <a href="MainController?btnAction=Delete&txtUserID=<%= dto.getUserID()%>&txtSearch=<%= Search%>">Delete</a>
+            </td>
+            <td>
+                <input type ="submit" name="btnAction" value="Update"/>
+                <input type="hidden" name="txtSearch" value="<%= Search%>"
+            </td>
+        </form>
+    </tr>
+    <% } %>
+
+</table>
+
+
+<%
+        }
+    }
+%>
+
+</body>--%>
 </html>

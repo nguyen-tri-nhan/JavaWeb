@@ -57,7 +57,8 @@ public class CreateController extends HttpServlet {
                 errorDTO.setErrorroleID("Role ID cannot empty");
             }
             if (!password.equals(rePassword)){
-                errorDTO.setErrorPassword("password and repass is not matche");
+                errorDTO.setErrorPassword("password and repass is not matches");
+                errorDTO.setErrorRePassword(errorDTO.getErrorPassword());
                 check = false;
             }
             UserDAO dao = new UserDAO();

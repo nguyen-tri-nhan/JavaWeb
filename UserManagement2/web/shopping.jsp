@@ -11,7 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Milk tea</title>
     </head>
-    <body>
+    <%--<body>
         <h1>Welcome to milk tea shop</h1>
         <form action="MainController">
             Select your drinking:
@@ -33,5 +33,19 @@
                 <%= message %>
             </h1>
         </form>
+    </body>--%>
+    <body>
+        <h1>Welcome to milk tea shop</h1>
+        <form action="MainController">
+            Select your drinking:
+            <select name="cmbTea">
+                <option value="T01-Peach Tea-20">Peach Tea</option>
+                <option value="T02-Matcha Tea-35">Matcha Tea</option>
+                <option value="T03-Black Tea-20">Black Tea</option>
+
+            </select>
+            <input type="submit" name="btnAction" value="Add"/>
+            <input type="submit" name="btnAction" value="View"/>
+            <font color="green">${requestScope.MESSAGE}</font>
     </body>
 </html>
