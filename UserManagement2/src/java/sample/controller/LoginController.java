@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sample.daos.UserDAO;
+import sample.dtos.UserDTO;
 
 /**
  *
@@ -42,12 +43,16 @@ public class LoginController extends HttpServlet {
             String userID = request.getParameter("txtUserID");
             String password = request.getParameter("txtPassword");
             UserDAO dao = new UserDAO();
-            String check = dao.checkLogin(userID, password);
-            session.setAttribute("ROLE_ID", dao.isAdmin(userID, password));
-            String role = (String)session.getAttribute("ROLE_ID");
-            if (!check.isEmpty() && role.equals("admin")) {
-                url = SUCCESS;
-                session.setAttribute("FULLNAME", dao.checkLogin(userID, password));
+            UserDTO user = dao.checkLogin2(userID, password);
+            //session.setAttribute("ROLE_ID", dao.isAdmin(userID, password));
+            if (user != null) {
+                String role = user.getRoleID();
+                if (user.getRoleID().equals("admin")) {
+                    session.setAttribute("USER", user);
+                    url = SUCCESS;
+                } else {
+                    url = "login.html";
+                }
             }
         } catch (Exception e) {
             log("error at login servlet: " + e.toString());

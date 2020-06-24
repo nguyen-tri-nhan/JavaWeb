@@ -54,6 +54,40 @@ public class UserDAO {
         return result;
     }
 
+    public UserDTO checkLogin2(String userID, String password) throws SQLException {
+        UserDTO result = null;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                String sql = "SELECT userID, fullName, roleID FROM tbUser "
+                        + "WHERE userID = " + "'" + userID + "'" + " AND password = " + "'" + password + "'";
+                //String sql = "SELECT userID FROM tbUser WHERE userID=?" + " AND password = ?";
+                stm = conn.prepareStatement(sql);
+//                stm.setString(1, userID);
+//                stm.setString(2, password);
+                rs = stm.executeQuery();
+                if (rs.next()) {
+                    result = new UserDTO(rs.getString("userID"), rs.getString("fullName"), "***", rs.getString("roleID"));
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return result;
+    }
+
     public String isAdmin(String userID, String password) throws SQLException {
         String result = "";
         Connection conn = null;
@@ -87,7 +121,7 @@ public class UserDAO {
         }
         return result;
     }
-    
+
     public List<UserDTO> getListUser(String search) throws SQLException {
         List<UserDTO> result = new ArrayList<UserDTO>();
         Connection conn = null;
@@ -123,6 +157,7 @@ public class UserDAO {
         }
         return result;
     }
+
     public void delete(String userID) throws SQLException {
         Connection conn = null;
         PreparedStatement stm = null;
@@ -135,7 +170,7 @@ public class UserDAO {
                 stm = conn.prepareStatement(sql);
                 stm.setString(1, userID);
                 stm.executeUpdate();
-                
+
             }
         } catch (Exception e) {
         } finally {
@@ -150,6 +185,7 @@ public class UserDAO {
             }
         }
     }
+
     public boolean checkID(String userID) throws SQLException {
         boolean result = true;
         Connection conn = null;
@@ -183,6 +219,7 @@ public class UserDAO {
         }
         return result;
     }
+
     public void create(UserDTO dto) throws SQLException {
         boolean result = true;
         Connection conn = null;
@@ -202,7 +239,7 @@ public class UserDAO {
             }
         } catch (Exception e) {
         } finally {
-            
+
             if (stm != null) {
                 stm.close();
             }
@@ -210,8 +247,9 @@ public class UserDAO {
                 conn.close();
             }
         }
-        
+
     }
+
     public void update(UserDTO dto) throws SQLException {
         boolean result = true;
         Connection conn = null;
@@ -230,7 +268,7 @@ public class UserDAO {
             }
         } catch (Exception e) {
         } finally {
-            
+
             if (stm != null) {
                 stm.close();
             }
@@ -238,6 +276,6 @@ public class UserDAO {
                 conn.close();
             }
         }
-        
+
     }
 }

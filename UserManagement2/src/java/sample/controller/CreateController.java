@@ -49,7 +49,7 @@ public class CreateController extends HttpServlet {
                 errorDTO.setErrorUserID("UserID cannot empty");
                 check = false;
             }
-            if (fullName.length()<1 || fullName.length()>5){
+            if (fullName.length()<1 || fullName.length()>20){
                 errorDTO.setErrorfullName("Full name must more than 1 and less than 10");
                 check = false;
             }

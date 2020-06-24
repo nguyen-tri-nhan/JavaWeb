@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
 
-    private static final String ERROR = "invalid.jsp";
+    private static final String ERROR = "invalid.html";
     private static final String LOGIN = "LoginController";
     private static final String SEARCH = "SearchController";
     private static final String LOGOUT = "LogoutController";
