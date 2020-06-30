@@ -23,7 +23,7 @@
         </nav>
         <h1>Welcome ${sessionScope.USER.fullName}</h1>
         <h3>Admin Tool: Book management</h3>
-        <form action="MainController" method="POST">
+        <form action="MainController">
             Search <input type="text" value="${param.txtSearchBook}" name="txtSearchBook"/>
             <input type="submit" value="SearchBook" name="btnAction"/>
         </form>
