@@ -1,39 +1,36 @@
 package library.dtos;
 
-import java.io.Serializable;
+public class BookDTO {
 
+    private String bookcode, title, author;
+    private float price;
+    private int quantity;
 
-public class BookDTO implements Serializable{
-    String bookCode = "", bookName = "", author = "", publisher = "";
-    int publishYear;
-    boolean forRent;
-    
-    public BookDTO(){
+    public BookDTO() {
     }
-    
-    public BookDTO(String bookCode, String bookName, String author, String publisher, int publishYear, boolean forRent){
-        this.bookCode = bookCode;
-        this.bookName = bookName;
+
+    public BookDTO(String bookcode, String title, String author, float price, int quantity) {
+        this.bookcode = bookcode;
+        this.title = title;
         this.author = author;
-        this.publisher = publisher;
-        this.publishYear = publishYear;
-        this.forRent = forRent;
+        this.price = price;
+        this.quantity = quantity;
     }
 
-    public String getBookCode() {
-        return bookCode;
+    public String getBookcode() {
+        return bookcode;
     }
 
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
+    public void setBookcode(String bookcode) {
+        this.bookcode = bookcode;
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthor() {
@@ -44,27 +41,20 @@ public class BookDTO implements Serializable{
         this.author = author;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public float getPrice() {
+        return price;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
+    public void setPrice(float price) {
+        this.price = price;
     }
 
-    public int getPublishYear() {
-        return publishYear;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setPublishYear(int publishYear) {
-        this.publishYear = publishYear;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
-
-    public boolean isForRent() {
-        return forRent;
-    }
-
-    public void setForRent(boolean forRent) {
-        this.forRent = forRent;
-    }
+    
 }

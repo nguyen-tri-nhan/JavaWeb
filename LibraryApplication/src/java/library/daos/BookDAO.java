@@ -1,6 +1,5 @@
 package library.daos;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +12,7 @@ import library.dtos.BookDTO;
  *
  * @author nguyentrinhan.dev
  */
-public class BookDAO implements Serializable {
+public class BookDAO{
 
     private Connection con = null;
     private PreparedStatement preStm = null;
@@ -34,10 +33,8 @@ public class BookDAO implements Serializable {
     public List<String> loadAllBookName() throws Exception {
         List<String> list = null;
 
-        BookDTO dto = null;
-
         try {
-            String sql = "SELECT bookName FROM Books";
+            String sql = "SELECT Title FROM tblBooks";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
             rs = preStm.executeQuery();
@@ -52,42 +49,41 @@ public class BookDAO implements Serializable {
         return list;
     }
 
-    public BookDTO findByBookName(String bookName) throws Exception {
-        BookDTO dto = null;
-
+    public List<BookDTO> getListBook(String search)throws Exception {
+        List<BookDTO> result = new ArrayList<BookDTO>();
         try {
-            String sql = "SELECT bookCode, author, publisher, publishYear, forRent FROM Books WHERE bookName = ?";
+            String sql = "SELECT BookID, Title, Price, Author, Quantity"
+                    + "FROM tblBooks WHERE Title=?";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
-            preStm.setString(1, bookName);
+            preStm.setString(1, "%"+search+"%");
             rs = preStm.executeQuery();
             if (rs.next()) {
-                String bookCode = rs.getString("bookCode");
+                String bookid = rs.getString("BookID");
+                String title = rs.getString("Title");
+                float price = rs.getFloat("Price");
                 String author = rs.getString("Author");
-                String publisher = rs.getString("Publisher");
-                int publishYear = rs.getInt("publishYear");
-                boolean forRent = rs.getBoolean("forRent");
-                dto = new BookDTO(bookCode, bookName, author, publisher, publishYear, forRent);
+                int quantity = rs.getInt("Quantity");
+                result.add(new BookDTO(bookid, title, author, price, quantity));
             }
         } finally {
             closeConnection();
         }
-        return dto;
+        return result;
     }
 
     public boolean insert(BookDTO dto) throws Exception {
         boolean check = false;
 
         try {
-            String sql = "INSERT INTO Books(bookCode, bookName, author, publisher, publishYear, forRent) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO Books(BookID, Title, Price, Author, Quantity) VALUES(?,?,?,?,?)";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
-            preStm.setString(1, dto.getBookCode());
-            preStm.setString(2, dto.getBookName());
-            preStm.setString(3, dto.getAuthor());
-            preStm.setString(4, dto.getPublisher());
-            preStm.setInt(5, dto.getPublishYear());
-            preStm.setBoolean(6, dto.isForRent());
+            preStm.setString(1, dto.getBookcode());
+            preStm.setString(2, dto.getTitle());
+            preStm.setFloat(3, dto.getPrice());
+            preStm.setString(4, dto.getAuthor());
+            preStm.setInt(5, dto.getQuantity());
             check = preStm.executeUpdate() > 0;
         } finally {
             closeConnection();
@@ -95,14 +91,14 @@ public class BookDAO implements Serializable {
         return check;
     }
 
-    public boolean delete(String bookCode) throws Exception {
+    public boolean delete(String bookid) throws Exception {
         boolean check = false;
 
         try {
-            String sql = "DELETE FROM Books WHERE bookCode = ?";
+            String sql = "DELETE FROM tblBooks WHERE BookID = ?";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
-            preStm.setString(1, bookCode);
+            preStm.setString(1, bookid);
             check = preStm.executeUpdate() > 0;
         } finally {
             closeConnection();
@@ -114,14 +110,12 @@ public class BookDAO implements Serializable {
         boolean check = false;
 
         try {
-            String sql = "UPDATE Books SET author = ?, publisher = ?, publishYear = ?, forRent = ? WHERE bookCode = ?";
+            String sql = "UPDATE tblBooks SET Price = ?, Quantity = ? WHERE BookID = ?";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
-            preStm.setString(1, dto.getAuthor());
-            preStm.setString(2, dto.getPublisher());
-            preStm.setInt(3, dto.getPublishYear());
-            preStm.setBoolean(4, dto.isForRent());
-            preStm.setString(5, dto.getBookCode());
+            preStm.setFloat(1, dto.getPrice());
+            preStm.setInt(2, dto.getQuantity());
+            preStm.setString(3, dto.getBookcode());
             check = preStm.executeUpdate() > 0;
         } finally {
             closeConnection();

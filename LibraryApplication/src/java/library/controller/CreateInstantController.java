@@ -11,23 +11,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import library.daos.UserDAO;
+import library.dtos.ErrorUserDTO;
+import library.dtos.UserDTO;
 
 /**
  *
- * @author nguyentrinhan2000
+ * @author Lenovo
  */
-public class MainController extends HttpServlet {
-    private static final String ERROR = "invalid.html";
-    private static final String LOGIN = "LoginController";
-    private static final String SEARCH_USER = "SearchUserController";
-    private static final String LOGOUT = "LogoutController";
-    private static final String DELETE_USER = "DeleteUserController";
-    private static final String CREATE_STUDENT = "CreateStudentController";
-    private static final String UPDATE_USER = "UpdateUserController";
-    private static final String INSTANT_CREATE = "CreateInstantController";
-    private static final String SEARCH_BOOK = "SearchBookController";
-    private static final String ADD = "AddController";
-    private static final String VIEW = "viewcart.jsp";
+public class CreateInstantController extends HttpServlet {
+
+    private static final String SUCCESS = "usermanagement.jsp";
+    private static final String ERROR = "usermanagement.jsp";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -42,28 +38,42 @@ public class MainController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR;
         try {
-            String action = request.getParameter("btnAction");
-            if (action.equals("Login")) {
-                url = LOGIN;
-            } else if (action.equals("SearchUser")){
-                url = SEARCH_USER;
-            } else if (action.equals("Logout")){
-                url = LOGOUT;
-            } else if (action.equals("DeleteUser")){
-                url = DELETE_USER;
-            } else if (action.equals("Register")){
-                url = CREATE_STUDENT;
-            } else if (action.equals("UpdateUser")){
-                url = UPDATE_USER;
-            } else if (action.equals("Add")){
-                url = ADD;
-            } else if (action.equals("View")){
-                url = VIEW;
-            } else if (action.equals("InstantCreate")){
-                url = INSTANT_CREATE;
-            } else if (action.equals("SearchBook")){
-                url = SEARCH_BOOK;
+            ErrorUserDTO errorDTO = new ErrorUserDTO("", "", "", "", "");
+            boolean check = true;
+            String userID = request.getParameter("txtNewID");
+            String fullName = request.getParameter("txtNewName");
+            String roleID = request.getParameter("txtNewRole");
+            String password = request.getParameter("txtNewPass");
+            if (userID.length() < 1) {
+                errorDTO.setErrorid("UserID cannot empty");
+                check = false;
             }
+            if (fullName.length() < 1 || fullName.length() > 20) {
+                errorDTO.setErrorname("Full name must more than 1 and less than 10");
+                check = false;
+            }
+            if (roleID.length() < 1) {
+                errorDTO.setErrorrole("Role ID cannot empty");
+                check = false;
+            }
+            if (!roleID.equals("1")&&!roleID.equals("2")&&!roleID.equals("3")){
+                errorDTO.setErrorrole("Role ID must be an interger between 1 and 3");
+                check = false;
+            }
+            UserDAO dao = new UserDAO();
+            boolean exits = dao.checkID(userID);
+            if (!exits) {
+                errorDTO.setErrorid("UserID is already exist");
+                check = false;
+            }
+            if (check) {
+                UserDTO dto = new UserDTO(userID, fullName, password, roleID);
+                dao.create(dto);
+                url = SUCCESS;
+            } else {
+                request.setAttribute("ERROR_USER", errorDTO);
+            }
+
         } catch (Exception e) {
         } finally {
             request.getRequestDispatcher(url).forward(request, response);

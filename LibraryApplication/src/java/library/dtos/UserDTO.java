@@ -10,24 +10,24 @@ package library.dtos;
  * @author nguyentrinhan2000
  */
 public class UserDTO {
-    private String UserID, fullName, password, roleID;
+    private String id, fullName, password, role;
 
     public UserDTO() {
     }
 
-    public UserDTO(String UserID, String fullName, String password, String roleID) {
-        this.UserID = UserID;
+    public UserDTO(String UserID, String fullName, String password, String role) {
+        this.id = UserID;
         this.fullName = fullName;
         this.password = password;
-        this.roleID = roleID;
+        this.role = role;
     }
 
-    public String getUserID() {
-        return UserID;
+    public String getId() {
+        return id;
     }
 
-    public void setUserID(String UserID) {
-        this.UserID = UserID;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFullName() {
@@ -46,12 +46,14 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getRoleID() {
-        return roleID;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleID(String roleID) {
-        this.roleID = roleID;
+    public void setRole(String role) {
+        this.role = role;
     }
+
+   
     
 }

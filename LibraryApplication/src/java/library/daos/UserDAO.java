@@ -20,150 +20,97 @@ import library.utils.DBUtils;
  */
 public class UserDAO {
 
-    public String checkLogin(String userID, String password) throws SQLException {
-        String result = "";
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
+    private Connection conn = null;
+    private PreparedStatement stm = null;
+    private ResultSet rs = null;
+
+    private void closeConnection() throws Exception {
+        if (rs != null) {
+            rs.close();
+        }
+        if (stm != null) {
+            stm.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    public UserDTO checkLogin(String ID, String password) throws SQLException, Exception {
+        UserDTO result = null;
         try {
             conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT fullName FROM tbUser "
-                        + "WHERE userID = " + "'" + userID + "'" + " AND password = " + "'" + password + "'";
-                //String sql = "SELECT userID FROM tbUser WHERE userID=?" + " AND password = ?";
+                
+                //String sql = "SELECT ID ,FullName, RoleID FROM tblUsers WHERE ID = ? AND Password = ?";
+                String sql = "SELECT U.ID, U.FullName, R.RoleName FROM tblUsers U, tblRoles R WHERE U.RoleID = R.RoleID AND ID = ? AND Password = ?";
                 stm = conn.prepareStatement(sql);
-//                stm.setString(1, userID);
-//                stm.setString(2, password);
+                stm.setString(1, ID);
+                stm.setString(2, password);
                 rs = stm.executeQuery();
                 if (rs.next()) {
-                    result = rs.getNString("fullName");
+                    result = new UserDTO(rs.getString("ID"), rs.getString("FullName"), "***", rs.getString("RoleName"));
                 }
             }
         } catch (Exception e) {
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+            closeConnection();
         }
         return result;
     }
 
-    public String isAdmin(String userID, String password) throws SQLException {
-        String result = "";
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        try {
-            conn = DBUtils.getConnection();
-            if (conn != null) {
-                String sql = "SELECT roleID FROM tbUser "
-                        + "WHERE userID = " + "'" + userID + "'" + " AND password = " + "'" + password + "'";
-                //String sql = "SELECT userID FROM tbUser WHERE userID=?" + " AND password = ?";
-                stm = conn.prepareStatement(sql);
-//                stm.setString(1, userID);
-//                stm.setString(2, password);
-                rs = stm.executeQuery();
-                if (rs.next()) {
-                    result = rs.getNString("roleID");
-                }
-            }
-        } catch (Exception e) {
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        }
-        return result;
-    }
-    
-    public List<UserDTO> getListUser(String search) throws SQLException {
+
+
+    public List<UserDTO> getListUser(String search) throws SQLException, Exception {
         List<UserDTO> result = new ArrayList<UserDTO>();
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
+        
         try {
             conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT userID, fullName, roleID FROM tbUser"
-                        + " WHERE fullName like ?";
+                String sql = "SELECT U.ID, U.FullName, R.RoleName FROM tblUsers U, tblRoles R WHERE U.FullName like ? AND U.RoleID = R.RoleID";
                 stm = conn.prepareStatement(sql);
                 stm.setString(1, "%" + search + "%");
                 rs = stm.executeQuery();
                 while (rs.next()) {
-                    String userID = rs.getString("userID");
-                    String fullName = rs.getString("fullName");
+                    String userID = rs.getString("ID");
+                    String fullName = rs.getString("FullName");
                     String password = "***";
-                    String roleID = rs.getString("roleID");
-                    result.add(new UserDTO(userID, fullName, password, roleID));
+                    String role = rs.getString("RoleName");
+                    result.add(new UserDTO(userID, fullName, password, role));
                 }
             }
         } catch (Exception e) {
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+            closeConnection();
         }
         return result;
     }
-    public void delete(String userID) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
+
+    public void delete(String userID) throws SQLException, Exception {
+        
         try {
             conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "DELETE tbUser"
-                        + " WHERE userID = ?";
+                String sql = "DELETE tblUsers"
+                        + " WHERE ID = ?";
                 stm = conn.prepareStatement(sql);
                 stm.setString(1, userID);
                 stm.executeUpdate();
-                
+
             }
         } catch (Exception e) {
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+            closeConnection();
         }
     }
-    public boolean checkID(String userID) throws SQLException {
+
+    public boolean checkID(String userID) throws SQLException, Exception {
         boolean result = true;
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT fullName FROM tbUser "
-                        + "WHERE userID = " + "'" + userID + "'";
-                //String sql = "SELECT userID FROM tbUser WHERE userID=?" + " AND password = ?";
+                String sql = "SELECT ID FROM tblUsers WHERE ID=?";
                 stm = conn.prepareStatement(sql);
-//                stm.setString(1, userID);
-//                stm.setString(2, password);
+                stm.setString(1, userID);
                 rs = stm.executeQuery();
                 if (rs.next()) {
                     result = false;
@@ -171,73 +118,49 @@ public class UserDAO {
             }
         } catch (Exception e) {
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+            closeConnection();
         }
         return result;
     }
-    public void create(UserDTO dto) throws SQLException {
+
+    public void create(UserDTO dto) throws SQLException, Exception {
         boolean result = true;
-        Connection conn = null;
-        PreparedStatement stm = null;
         try {
             conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "INSERT INTO tbUser(userID, password, fullName, roleID)"
+                String sql = "INSERT INTO tblUsers(ID, Password, FullName, RoleID)"
                         + " VALUES (?,?,?,?)";
-                //String sql = "SELECT userID FROM tbUser WHERE userID=?" + " AND password = ?";
                 stm = conn.prepareStatement(sql);
-                stm.setString(1, dto.getUserID());
+                stm.setString(1, dto.getId());
                 stm.setString(2, dto.getPassword());
                 stm.setString(3, dto.getFullName());
-                stm.setString(4, dto.getRoleID());
+                stm.setInt(4, Integer.parseInt(dto.getRole()));
                 stm.executeUpdate();
             }
         } catch (Exception e) {
         } finally {
-            
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+            closeConnection();
         }
-        
+
     }
-    public void update(UserDTO dto) throws SQLException {
+
+    public void update(UserDTO dto) throws SQLException, Exception {
         boolean result = true;
-        Connection conn = null;
-        PreparedStatement stm = null;
         try {
             conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "UPDATE tbUser SET fullName = ?, roleID = ?"
-                        + " WHERE UserID = ?";
+                String sql = "UPDATE tblUsers SET FullName = ?"
+                        + " WHERE ID = ?";
                 //String sql = "SELECT userID FROM tbUser WHERE userID=?" + " AND password = ?";
                 stm = conn.prepareStatement(sql);
                 stm.setString(1, dto.getFullName());
-                stm.setString(2, dto.getRoleID());
-                stm.setString(3, dto.getUserID());
+                stm.setString(2, dto.getId());
                 stm.executeUpdate();
             }
         } catch (Exception e) {
         } finally {
-            
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+            closeConnection();
         }
-        
+
     }
 }

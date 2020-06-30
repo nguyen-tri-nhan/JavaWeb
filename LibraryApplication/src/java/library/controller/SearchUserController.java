@@ -6,28 +6,25 @@
 package library.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import library.daos.UserDAO;
+import library.dtos.UserDTO;
 
 /**
  *
  * @author nguyentrinhan2000
  */
-public class MainController extends HttpServlet {
+@WebServlet(name = "SearchController", urlPatterns = {"/SearchController"})
+public class SearchUserController extends HttpServlet {
+    private static final String SUCCESS = "usermanagement.jsp";
     private static final String ERROR = "invalid.html";
-    private static final String LOGIN = "LoginController";
-    private static final String SEARCH_USER = "SearchUserController";
-    private static final String LOGOUT = "LogoutController";
-    private static final String DELETE_USER = "DeleteUserController";
-    private static final String CREATE_STUDENT = "CreateStudentController";
-    private static final String UPDATE_USER = "UpdateUserController";
-    private static final String INSTANT_CREATE = "CreateInstantController";
-    private static final String SEARCH_BOOK = "SearchBookController";
-    private static final String ADD = "AddController";
-    private static final String VIEW = "viewcart.jsp";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -42,29 +39,15 @@ public class MainController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR;
         try {
-            String action = request.getParameter("btnAction");
-            if (action.equals("Login")) {
-                url = LOGIN;
-            } else if (action.equals("SearchUser")){
-                url = SEARCH_USER;
-            } else if (action.equals("Logout")){
-                url = LOGOUT;
-            } else if (action.equals("DeleteUser")){
-                url = DELETE_USER;
-            } else if (action.equals("Register")){
-                url = CREATE_STUDENT;
-            } else if (action.equals("UpdateUser")){
-                url = UPDATE_USER;
-            } else if (action.equals("Add")){
-                url = ADD;
-            } else if (action.equals("View")){
-                url = VIEW;
-            } else if (action.equals("InstantCreate")){
-                url = INSTANT_CREATE;
-            } else if (action.equals("SearchBook")){
-                url = SEARCH_BOOK;
+            String search = request.getParameter("txtSearch");
+            UserDAO dao = new UserDAO();
+            List<UserDTO> list = dao.getListUser(search);
+            if (!list.isEmpty()){
+                url=SUCCESS;
+                request.setAttribute("LIST_USER", list);
             }
         } catch (Exception e) {
+            log("Error at SearchServlet " + e.toString());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

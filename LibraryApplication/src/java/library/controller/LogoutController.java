@@ -11,23 +11,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author nguyentrinhan2000
+ * @author Lenovo
  */
-public class MainController extends HttpServlet {
-    private static final String ERROR = "invalid.html";
-    private static final String LOGIN = "LoginController";
-    private static final String SEARCH_USER = "SearchUserController";
-    private static final String LOGOUT = "LogoutController";
-    private static final String DELETE_USER = "DeleteUserController";
-    private static final String CREATE_STUDENT = "CreateStudentController";
-    private static final String UPDATE_USER = "UpdateUserController";
-    private static final String INSTANT_CREATE = "CreateInstantController";
-    private static final String SEARCH_BOOK = "SearchBookController";
-    private static final String ADD = "AddController";
-    private static final String VIEW = "viewcart.jsp";
+public class LogoutController extends HttpServlet {
+    private static final String LOGIN = "login.html";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -40,33 +31,15 @@ public class MainController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = ERROR;
+        String url = LOGIN;
         try {
-            String action = request.getParameter("btnAction");
-            if (action.equals("Login")) {
-                url = LOGIN;
-            } else if (action.equals("SearchUser")){
-                url = SEARCH_USER;
-            } else if (action.equals("Logout")){
-                url = LOGOUT;
-            } else if (action.equals("DeleteUser")){
-                url = DELETE_USER;
-            } else if (action.equals("Register")){
-                url = CREATE_STUDENT;
-            } else if (action.equals("UpdateUser")){
-                url = UPDATE_USER;
-            } else if (action.equals("Add")){
-                url = ADD;
-            } else if (action.equals("View")){
-                url = VIEW;
-            } else if (action.equals("InstantCreate")){
-                url = INSTANT_CREATE;
-            } else if (action.equals("SearchBook")){
-                url = SEARCH_BOOK;
+            HttpSession session = request.getSession(false);
+            if (session != null){
+                session.invalidate();
             }
         } catch (Exception e) {
         } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+            response.sendRedirect(url);
         }
     }
 

@@ -6,23 +6,27 @@
 package library.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import library.daos.UserDAO;
+import library.dtos.UserDTO;
 
 /**
  *
  * @author nguyentrinhan2000
  */
+@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
 public class LoginController extends HttpServlet {
 
-    public static final String ADMIN = "adminPage.jsp";
-    public static final String USER = "library.jsp";
-    public static final String ERROR = "index.html";
+    public static final String STUDENT = "library.jsp";
+    public static final String ADMIN = "adminpage.jsp";
+    public static final String ERROR = "invalid.html";
+    public static final String START = "login.html";
+    public static int COUNT = 0;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,26 +40,32 @@ public class LoginController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
         String url = ERROR;
         try {
             String userID = request.getParameter("txtUserID");
             String password = request.getParameter("txtPassword");
             UserDAO dao = new UserDAO();
-            String check = dao.checkLogin(userID, password);
-            session.setAttribute("ROLE_ID", dao.isAdmin(userID, password));
-            String role = (String) session.getAttribute("ROLE_ID");
-            if (!check.isEmpty() && role.equals("admin")) {
-                url = ADMIN;
-                session.setAttribute("FULLNAME", dao.checkLogin(userID, password));
-            } else if (!check.isEmpty() && role.equals("user")) {
-                url = USER;
-                session.setAttribute("FULLNAME", dao.checkLogin(userID, password));
+            UserDTO user = dao.checkLogin(userID, password);
+            if (user != null && COUNT < 3) {
+                if (user.getRole().equals("Admin")) {
+                    session.setAttribute("USER", user);
+                    url = ADMIN;
+                } else if(user.getRole().equals("Student")){
+                    session.setAttribute("USER", user);
+                    url = STUDENT;
+                }
+            } else if (COUNT < 3){
+                url = START;
+                COUNT++;
+            } else {
+                url = ERROR;
             }
         } catch (Exception e) {
-            log("Error at login servlet: " + e.toString());
+            log("error at login servlet: " + e.toString());
         } finally {
             response.sendRedirect(url);
+
         }
     }
 

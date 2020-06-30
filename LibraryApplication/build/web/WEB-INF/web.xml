@@ -8,6 +8,34 @@
         <servlet-name>LoginController</servlet-name>
         <servlet-class>library.controller.LoginController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SearchUserController</servlet-name>
+        <servlet-class>library.controller.SearchUserController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutController</servlet-name>
+        <servlet-class>library.controller.LogoutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateUserController</servlet-name>
+        <servlet-class>library.controller.UpdateUserController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteUserController</servlet-name>
+        <servlet-class>library.controller.DeleteUserController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateInstantController</servlet-name>
+        <servlet-class>library.controller.CreateInstantController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateStudentController</servlet-name>
+        <servlet-class>library.controller.CreateStudentController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchBookController</servlet-name>
+        <servlet-class>library.controller.SearchBookController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>MainController</servlet-name>
         <url-pattern>/MainController</url-pattern>
@@ -16,9 +44,40 @@
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/LoginController</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/LogoutController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchUserController</servlet-name>
+        <url-pattern>/SearchUserController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateUserController</servlet-name>
+        <url-pattern>/UpdateUserController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteUserController</servlet-name>
+        <url-pattern>/DeleteUserController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateInstantController</servlet-name>
+        <url-pattern>/CreateInstantController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateStudentController</servlet-name>
+        <url-pattern>/CreateStudentController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchBookController</servlet-name>
+        <url-pattern>/SearchBookController</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
+    <welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
 </web-app>
