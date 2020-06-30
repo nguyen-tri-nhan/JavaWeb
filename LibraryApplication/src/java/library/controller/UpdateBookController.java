@@ -6,24 +6,20 @@
 package library.controller;
 
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import library.daos.UserDAO;
-import library.dtos.UserDTO;
+import library.daos.BookDAO;
+import library.dtos.BookDTO;
 
 /**
  *
- * @author nguyentrinhan2000
+ * @author Lenovo
  */
-@WebServlet(name = "SearchController", urlPatterns = {"/SearchController"})
-public class SearchUserController extends HttpServlet {
-    private static final String SUCCESS = "usermanagement.jsp";
+public class UpdateBookController extends HttpServlet {
+    private static final String SUCCESS = "SearchBookController";
     private static final String ERROR = "invalid.html";
-    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,15 +34,14 @@ public class SearchUserController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR;
         try {
-            String search = request.getParameter("txtSearch");
-            UserDAO dao = new UserDAO();
-            List<UserDTO> list = dao.getListUser(search);
-            if (!list.isEmpty()){
-                url=SUCCESS;
-                request.setAttribute("LIST_USER", list);
-            }
+            String id = request.getParameter("txtBookId");
+            float price = Float.parseFloat(request.getParameter("txtPrice"));
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            BookDAO dao = new BookDAO();
+            BookDTO dto = new BookDTO(id, "", "", price, quantity);
+            dao.update(dto);
+            url = SUCCESS;
         } catch (Exception e) {
-            log("Error at SearchServlet " + e.toString());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

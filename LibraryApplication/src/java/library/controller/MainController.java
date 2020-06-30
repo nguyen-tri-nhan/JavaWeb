@@ -26,6 +26,9 @@ public class MainController extends HttpServlet {
     private static final String UPDATE_USER = "UpdateUserController";
     private static final String INSTANT_CREATE = "CreateInstantController";
     private static final String SEARCH_BOOK = "SearchBookController";
+    private static final String CREATE_BOOK = "CreateBookController";
+    private static final String UPDATE_BOOK = "UpdateBookController";
+    private static final String DELETE_BOOK = "DeleteBookController";
     private static final String ADD = "AddController";
     private static final String VIEW = "viewcart.jsp";
     /**
@@ -63,6 +66,12 @@ public class MainController extends HttpServlet {
                 url = INSTANT_CREATE;
             } else if (action.equals("SearchBook")){
                 url = SEARCH_BOOK;
+            } else if (action.equals("CreateBook")){
+                url = CREATE_BOOK;
+            } else if (action.equals("UpdateBook")){
+                url = UPDATE_BOOK;
+            } else if (action.equals("DeleteBook")){
+                url = DELETE_BOOK;
             }
         } catch (Exception e) {
         } finally {

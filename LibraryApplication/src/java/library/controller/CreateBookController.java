@@ -6,24 +6,21 @@
 package library.controller;
 
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import library.daos.UserDAO;
-import library.dtos.UserDTO;
+import library.daos.BookDAO;
+import library.dtos.BookDTO;
+import library.dtos.ErrorBookDTO;
 
 /**
  *
- * @author nguyentrinhan2000
+ * @author Lenovo
  */
-@WebServlet(name = "SearchController", urlPatterns = {"/SearchController"})
-public class SearchUserController extends HttpServlet {
-    private static final String SUCCESS = "usermanagement.jsp";
-    private static final String ERROR = "invalid.html";
-    
+public class CreateBookController extends HttpServlet {
+    private static final String SUCCESS = "SearchBookController";
+    private static final String ERROR = "bookmanagement.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,15 +35,47 @@ public class SearchUserController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR;
         try {
-            String search = request.getParameter("txtSearch");
-            UserDAO dao = new UserDAO();
-            List<UserDTO> list = dao.getListUser(search);
-            if (!list.isEmpty()){
-                url=SUCCESS;
-                request.setAttribute("LIST_USER", list);
+            ErrorBookDTO errorDTO = new ErrorBookDTO("", "", "", "", "");
+            boolean check = true;
+            String bookid = request.getParameter("txtNewBookID");
+            String title = request.getParameter("txtNewTitle");
+            float price = Float.parseFloat(request.getParameter("txtNewPrice"));
+            String author = request.getParameter("txtNewAuthor");
+            int quantity = Integer.parseInt(request.getParameter("txtNewQuantity"));
+            BookDAO dao = new BookDAO();
+            boolean exits = dao.checkExits(bookid);
+            if (bookid.length() < 1){
+                errorDTO.setErrorbookcode("Book id cannot empty");
+                check = false;
+            }
+            if (title.length() < 1){
+                errorDTO.setErrortitle("Book name cannot empty");
+                check = false;
+            }
+            if (price < 0){
+                errorDTO.setErrorprice("Price cannot minus number");
+                check = false;
+            }
+            if (author.length() < 1){
+                errorDTO.setErrorauthor("Book must have at least an author");
+                check = false;
+            }
+            if (quantity < 0){
+                errorDTO.setErrorquantity("Book does not exists");
+                check = false;
+            }
+            if (!exits){
+                errorDTO.setErrorbookcode("BookID is already exists");
+                check = false;
+            }
+            if (check) {
+                BookDTO dto = new BookDTO(bookid, title, author, price, quantity);
+                dao.insert(dto);
+                url = SUCCESS;
+            } else {
+                request.setAttribute("ERROR_BOOK", errorDTO);
             }
         } catch (Exception e) {
-            log("Error at SearchServlet " + e.toString());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

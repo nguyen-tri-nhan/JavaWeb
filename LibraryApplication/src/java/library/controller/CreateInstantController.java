@@ -6,7 +6,6 @@
 package library.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,7 @@ import library.dtos.UserDTO;
  */
 public class CreateInstantController extends HttpServlet {
 
-    private static final String SUCCESS = "usermanagement.jsp";
+    private static final String SUCCESS = "SearchController";
     private static final String ERROR = "usermanagement.jsp";
 
     /**

@@ -12,7 +12,7 @@ import library.dtos.BookDTO;
  *
  * @author nguyentrinhan.dev
  */
-public class BookDAO{
+public class BookDAO {
 
     private Connection con = null;
     private PreparedStatement preStm = null;
@@ -49,16 +49,36 @@ public class BookDAO{
         return list;
     }
 
-    public List<BookDTO> getListBook(String search)throws Exception {
+    public boolean checkExits(String bookid) throws Exception {
+        boolean result = true;
+        try {
+            con = DBUtils.getConnection();
+            if (con != null) {
+                String sql = "SELECT Title FROM tblBooks WHERE BookID = ?";
+                preStm = con.prepareStatement(sql);
+                preStm.setString(1, bookid);
+                rs = preStm.executeQuery();
+                if (rs.next()){
+                    result = false;
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            closeConnection();
+        }
+        return result;
+    }
+
+    public List<BookDTO> getListBook(String search) throws Exception {
         List<BookDTO> result = new ArrayList<BookDTO>();
         try {
-            String sql = "SELECT BookID, Title, Price, Author, Quantity"
-                    + "FROM tblBooks WHERE Title=?";
+            String sql = "SELECT BookID, Title, Author, Price, Quantity FROM tblBooks "
+                    + "WHERE Title like ?";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
-            preStm.setString(1, "%"+search+"%");
+            preStm.setString(1, "%" + search + "%");
             rs = preStm.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 String bookid = rs.getString("BookID");
                 String title = rs.getString("Title");
                 float price = rs.getFloat("Price");
@@ -76,7 +96,7 @@ public class BookDAO{
         boolean check = false;
 
         try {
-            String sql = "INSERT INTO Books(BookID, Title, Price, Author, Quantity) VALUES(?,?,?,?,?)";
+            String sql = "INSERT INTO tblBooks(BookID, Title, Price, Author, Quantity) VALUES(?,?,?,?,?)";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
             preStm.setString(1, dto.getBookcode());
@@ -91,36 +111,33 @@ public class BookDAO{
         return check;
     }
 
-    public boolean delete(String bookid) throws Exception {
-        boolean check = false;
+    public void delete(String bookid) throws Exception {
 
         try {
             String sql = "DELETE FROM tblBooks WHERE BookID = ?";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
             preStm.setString(1, bookid);
-            check = preStm.executeUpdate() > 0;
+            preStm.executeUpdate();
         } finally {
             closeConnection();
         }
-        return check;
     }
 
-    public boolean update(BookDTO dto) throws Exception {
-        boolean check = false;
+    public void update(BookDTO dto) throws Exception {
 
         try {
-            String sql = "UPDATE tblBooks SET Price = ?, Quantity = ? WHERE BookID = ?";
+            String sql = "UPDATE tblBooks SET Price = ?, Quantity = ?"
+                    + " WHERE BookID = ?";
             con = DBUtils.getConnection();
             preStm = con.prepareStatement(sql);
             preStm.setFloat(1, dto.getPrice());
             preStm.setInt(2, dto.getQuantity());
             preStm.setString(3, dto.getBookcode());
-            check = preStm.executeUpdate() > 0;
+            preStm.executeUpdate();
         } finally {
             closeConnection();
         }
-        return check;
     }
 
 }

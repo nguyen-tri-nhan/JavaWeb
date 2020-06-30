@@ -6,24 +6,20 @@
 package library.controller;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import library.daos.UserDAO;
-import library.dtos.UserDTO;
+import library.daos.BookDAO;
 
 /**
  *
- * @author nguyentrinhan2000
+ * @author Lenovo
  */
-@WebServlet(name = "SearchController", urlPatterns = {"/SearchController"})
-public class SearchUserController extends HttpServlet {
-    private static final String SUCCESS = "usermanagement.jsp";
+public class DeleteBookController extends HttpServlet {
+    private static final String SUCCESS = "SearchBookController";
     private static final String ERROR = "invalid.html";
-    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,15 +34,12 @@ public class SearchUserController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR;
         try {
-            String search = request.getParameter("txtSearch");
-            UserDAO dao = new UserDAO();
-            List<UserDTO> list = dao.getListUser(search);
-            if (!list.isEmpty()){
-                url=SUCCESS;
-                request.setAttribute("LIST_USER", list);
-            }
+            String bookid = request.getParameter("txtBookId");
+            BookDAO dao = new BookDAO();
+            dao.delete(bookid);
+            url = SUCCESS;
         } catch (Exception e) {
-            log("Error at SearchServlet " + e.toString());
+            log("Error at DeleteController: " + e.toString());
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }
