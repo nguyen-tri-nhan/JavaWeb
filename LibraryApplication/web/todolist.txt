@@ -1,0 +1,24 @@
+Deadline 14/07/2020
+Done:   Login
+            Role
+
+        Admin role
+            CRUD book
+            CRUD user
+            Manage Order
+            View Details
+
+        User role
+            View library
+        User role
+            View book by
+                Authors
+                Publishers
+                Price
+                Language
+
+            Add a book to cart
+            View cart
+            Perform borrow
+            View order
+            View order details
